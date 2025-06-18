@@ -5,14 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
 </head>
-<body>
+<body onload="fetchContacts()">
     <div id="table">Contacts loading...</div>
     <button id="refresh" type="button">Refresh</button>
     <button id="addContact" type="button">Add Contact</button>
 
     <script src="config.js"></script>
     <script>
-        
+        function fetchContacts(){
+            fetch(rootPath + "controller/get-contacts/")
+            //Call back function that take the response object that is coming from the server.
+            .then(function(response){
+                //Convert the reponse object into a json array. 
+                return response.json();
+            })
+            .then(function(data){
+                //Takes the json array contacts data that is coming from the server in rows and displays it as a "Beatiful table on the screen" - Bilal Kathrada (iT Varsity)
+                //displayOutput(data);
+                console.log(data);
+            })
+        }
+
+        function displayOutput(data){
+            //create a data table
+            output = "<table>";
+
+                //for loop to iterate through the array. 
+                for( a in data){
+                    
+                    //Take and put each elemet of the data array into individual cell within the table 
+                    output += `
+                        <tr>
+                            <td><img src="${rootPath}controller/uploads/${data[a].avatar}"/></td>
+                            <td><h5>${data[a].firstname}</h5></td>
+                            <td><h5>${data[a].lastname}</h5></td>
+                        </tr>
+                               `
+                }
+                //close the table
+                output += "</table>";
+                //Set the div element with id table to display the contents (What is between the div tags) of the element. 
+                document.getElementById("table").innerHTML = output;
+        }
     </script>
     
 </body>
