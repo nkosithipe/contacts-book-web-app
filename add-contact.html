@@ -7,6 +7,7 @@
 </head>
 <body>
      <br>
+     <!--form structure-->
      <form id="editForm">
         <label for="firstname">First name</label>
         <input type="text" name="firstname" id="firstname"><br>
@@ -21,11 +22,20 @@
         <button type="submit" id="submitForm">Submit</button>
      </form>
      <br>
+     <!--Hom page return button-->
      <button type="button" id="homeLink">Home</button>
 
+     <!--Link our API scripts i.e. config.js rootPath variables and API Ky prompt page-->
      <script src="config.js"></script>
      <script>
-        
+
+        function submitForm(e){
+            e.preventDefault();
+            
+            //Create form data object
+            const form = new FormData(document.querySelector('editForm'));
+            form.append('apiKey', apiKey);
+        }
      </script>
     
 </body>
