@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body onload="getContact()">
+    <div id="avatarImage"></div>
+    <form id="editForm">
+        <label for="firstname">First name</label>
+        <input type="text" name="firstname" id="firstname" readonly><br>
+        <label for="lastname">Last name</label>
+        <input type="text" name="lastname" id="lastname" readonly><br>
+        <label for="mobile">Mobile</label>
+        <input type="text" name="mobile" id="mobile" readonly><br>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" readonly><br>
+        <label for="avatar">Chnage profile image</label><br>
+        <input type="file" name="avatar" id="avatar" hidden><br>
+        <br>
+        <button type="submit" id="submitForm" hidden>Submit</button>
+    </form>
+    <br><br>
+    <button type="button" id="homeLink">Home</button>
+    <button type="button" id="editContact">Edit</button>
+    <button type="button" id="deleteContact">Delete</button>
+     
+    <script src="config.js"></script>
+    <script>
+        //Global variable set for the id declares a function as a parameter which catches the id.
+        var id = getId();
+        document.getElementById("homeLink").addEventListener('click', homeLink);
+        document.getElementById("editContact").addEventListener('click', editContact);
+
+
+        function getId(){
+            //javascript returns the urls of the open window
+            var url = window.location.href;
+            //Retreieving a numbr which denotes which position the "equal to" sign is in the url
+            var pos = url.search("=");
+            //Cut out the number that is in the variabl id from the rest of the url and capture that 
+            var id = url.slice(pos + 1);
+            //return or receive the id
+            return id; 
+        }
+
+        function getContact(){
+            fetch(rootPath + 'cotroller/get-contacts/?id=' + id)
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(data){
+                displayOutput(data);
+            })
+        }
+
+        function homeLink(){
+            window.open("index.html", "_self");
+        }
+
+        function displayOutput(data){
+            avatarImage = `
+                <img src="${rootPath}/controller/uploads/${data[0].avatar}" width="200" />
+                `
+            document.getElementById("avatarImage").innerHTML = avatarImage;
+            document.getElementById("firstname").value = data[0].firstname;
+            document.getElementById("mobile").value = data[0].mobile;
+            document.getElementById("email").value = data[0].email;
+        }
+
+        function editContact(){
+            document.getElementById("firstname").readonly = false;
+            document.getElementById("lastname").readonly = false;
+            document.getElementById("mobile").readonly = false;
+            document.getElementById("email").readonly = false;
+            document.getElementById("avatar").hidden = false;
+            document.getElementById("submitForm").hidden = false;
+        }
+
+        function submitForm(e){
+            e.preventDefault();
+
+            const form = new FormData(document.querySelector("#editForm"));
+            form.append('apiKey', apiKey);
+            form.append('id', id);
+
+        }
+
+    </script>
+
+</body>
+</html>
